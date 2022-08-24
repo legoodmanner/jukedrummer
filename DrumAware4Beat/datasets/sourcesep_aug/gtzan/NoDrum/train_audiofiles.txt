@@ -1,9 +1,0 @@
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00005.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00006.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00001.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00003.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00004.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00002.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00010.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00009.wav
-/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/./datasets/sourcesep_aug/gtzan/NoDrum/blues.00000.wav
