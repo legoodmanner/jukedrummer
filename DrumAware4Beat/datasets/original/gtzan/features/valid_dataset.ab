@@ -1,0 +1,4 @@
+,audio_file,beats_file,feature_file,offset,duration,length,song_duration,name
+0,/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/datasets/original/gtzan/audio/blues.00007.wav,./datasets/original/gtzan/downbeats/blues.00007.beats,./datasets/original/gtzan/features/cutfeatures/blues.00007.000.npy,0,10,441000,30.013333333333332,blues.00007.000
+1,/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/datasets/original/gtzan/audio/blues.00007.wav,./datasets/original/gtzan/downbeats/blues.00007.beats,./datasets/original/gtzan/features/cutfeatures/blues.00007.001.npy,10,10,441000,30.013333333333332,blues.00007.001
+2,/home/sunnycyc/NAS_189/home/BeatTracking/EUSIPCO_repo/datasets/original/gtzan/audio/blues.00007.wav,./datasets/original/gtzan/downbeats/blues.00007.beats,./datasets/original/gtzan/features/cutfeatures/blues.00007.002.npy,20,10,441000,30.013333333333332,blues.00007.002
