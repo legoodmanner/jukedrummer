@@ -25,17 +25,15 @@ class Hyperparams(dict):
 LM_DEFAULTS = Hyperparams(
     batch_size=16,
     sample_step=10,
-    wandb=True,
-    ckpt_dir='',
-    path='',
+    ckpt_dir='ckpt/',
+    path='data/',
 )
 
 VQ_DEFAULTS = Hyperparams(
     batch_size=32,
     sample_step=50,
-    wandb=True,
-    ckpt_dir='',
-    path='',
+    ckpt_dir='ckpt/',
+    path='data/',
 )
 
 def setup_lm_hparams(hparam_set_names):
