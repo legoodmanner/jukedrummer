@@ -60,7 +60,7 @@ def time2frame4onset(beat_est, ratio, hop_length=256, sr=44100):
     return result
 
 class BeatInfoExtractor():
-    def __init__(self, info_type, device, input_csv_path='DrumAware4Beat/spl_models_hmmparams.csv'):
+    def __init__(self, info_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
         self.hmm_proc, self.rnn = get_proc(input_csv_path, device)
         self.info_type = info_type
         self.device = device
@@ -138,7 +138,7 @@ if __name__ == "__main__":
     parser.add_argument('info_type', type=str, choices=['onset', 'raw', 'beat'])
     parser.add_argument('file_path', type=str)
     parser.add_argument('output_path', type=str)
-    parser.add_argument('--haparam_csv', type=str, default='DrumAware4Beat/spl_models_hmmparams.csv')
+    parser.add_argument('--haparam_csv', type=str, default='src/drumaware_hmmparams.csv')
     parser.add_argument('--cuda', type=int, default=0)
     arg = parser.parse_args()
     main(arg)
