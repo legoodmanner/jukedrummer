@@ -10,7 +10,7 @@ from jukebox.make_models import MODELS
 from torchvision.utils import make_grid
 from model.LanguageModel import JukeTransformer
 from model.vqvae import VQVAE, Sampler
-from data import *
+from dataset import *
 
 from jukebox.train import get_optimizer
 from hparams import OPT, MODEL_LIST, setup_lm_hparams

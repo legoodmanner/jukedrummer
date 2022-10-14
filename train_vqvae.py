@@ -4,7 +4,7 @@ import os
 from tqdm import tqdm 
 from torchvision.utils import make_grid
 
-from data import *
+from dataset import *
 from model.vqvae import VQVAE, Sampler
 import argparse
 
