@@ -106,4 +106,5 @@ if __name__ == "__main__":
                 sample_rate=sr,
                 extract_func=extract_func,
                 ), audio_fns)),1):
-
+        if length == 0:
+            print(f'{fn} is not genereted into Mel spectrogram')
