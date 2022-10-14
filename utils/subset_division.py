@@ -6,7 +6,7 @@ import argparse
 import random
 
 def write_subset(segments, pkl_path, valid_precentage=0.2):
-    nfile = len(os.listdir('/home/lego/NAS189/home/codify/data/drums/audio/target/'))
+    nfile = len(os.listdir('data/audio/target/'))
     segments = sorted(segments)
 
     fns = {}
