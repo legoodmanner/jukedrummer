@@ -148,7 +148,7 @@ if __name__ == '__main__':
             project='JukeDrummer Language model',
             entity='',
             config=hps,
-            dir='../wandb',
+            dir='./wandb',
             name= 'exp'+str(args.exp_idx),
         )
 

@@ -85,9 +85,9 @@ except ImportError:
 
 if is_wandb:
     run = wandb.init(
-        project='Codify Custom VQVAE',
-        entity='yklego',
-        dir='../wandb',
+        project='JukeDrummer VQ-VAE',
+        entity='',
+        dir='./wandb',
         config=hps,
         name=f'{hps.name} {args.data_type}',
     )
