@@ -39,4 +39,4 @@ if __name__ == '__main__':
             token = mel2token(dpath, vqvae, mean, std, device)
             np.save(os.path.join(args.output_dir, args.data_type, hps.name ,fname), token)
         except:
-            pass
+            print(f'{fname} error occur')

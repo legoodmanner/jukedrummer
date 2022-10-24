@@ -55,8 +55,6 @@ class PositionalEncoding(nn.Module):
         x = x + self.pe[:,:x.size(1)]
         return self.dropout(x)
 
-
-
 from jukebox.hparams import setup_hparams
 from jukebox.transformer.ops import Conv1D, LayerNorm
 
@@ -69,14 +67,14 @@ class JukeTransformer(nn.Module):
         print(f'use tokens:{self.use_tokens}')
         self.prime_state_proj = Conv1D(args.d_model, args.d_model)
         self.prime_state_ln = LayerNorm(args.d_model)
-        self.bact_type = args.bact_type
-        if self.bact_type == 'raw':
-            self.bact_state_proj = Conv1D(50, args.d_model)
-        elif self.bact_type == 'token':
-            self.beat_emb = nn.Embedding(3, args.d_model)
-        elif self.bact_type == 'onset':
+        self.binfo_type = args.binfo_type
+        if self.binfo_type == 'low':
+            self.binfo_state_proj = Conv1D(50, args.d_model)
+        elif self.binfo_type == 'mid':
             self.onset_emb = nn.Embedding(2, args.d_model)
-        elif self.bact_type is None:
+        elif self.binfo_type == 'high':
+            self.beat_emb = nn.Embedding(3, args.d_model)
+        elif self.binfo_type is None:
             pass
 
     def get_prime_loss(self, encoder_kv, prime_t):
@@ -88,10 +86,10 @@ class JukeTransformer(nn.Module):
             prime_loss = torch.tensor(0.0, device='cuda')
         return prime_loss
 
-    def get_encoder_kv(self, prime, bact, fp16=False):
+    def get_encoder_kv(self, prime, binfo, fp16=False):
         if self.use_tokens:
             N = prime.shape[0]
-            prime_acts = self.prime_prior(prime, bact, None, None, fp16=fp16, isroll=False)
+            prime_acts = self.prime_prior(prime, binfo, None, None, fp16=fp16, isroll=False)
             assert prime_acts.dtype == torch.float, f'Expected torch.float, got {prime_acts.dtype}'
             encoder_kv = self.prime_state_ln(self.prime_state_proj(prime_acts))
             assert encoder_kv.dtype == torch.float, f'Expected torch.float, got {encoder_kv.dtype}'
@@ -99,33 +97,33 @@ class JukeTransformer(nn.Module):
             encoder_kv = None
         return encoder_kv
     
-    def bact_conditioner(self, bact):
-        if self.bact_type == 'raw':
-            bact = F.interpolate(bact.unsqueeze(1), size=(self.prior.encoder_dims, bact.size(-1))).squeeze(1)
-            bact = self.bact_state_proj(bact)
-        elif self.bact_type == 'token':
-            bact = bact.double()
-            bact = torch.where(bact > 1, 2., bact)
-            bact = self.beat_emb(bact.long())
-        elif self.bact_type == 'onset':
-            bact = self.onset_emb(bact.long())
-        elif self.bact_type is None:
-            bact = None
-        return bact
+    def binfo_conditioner(self, binfo):
+        if self.binfo_type == 'raw':
+            binfo = F.interpolate(binfo.unsqueeze(1), size=(self.prior.encoder_dims, binfo.size(-1))).squeeze(1)
+            binfo = self.binfo_state_proj(binfo)
+        elif self.binfo_type == 'token':
+            binfo = binfo.double()
+            binfo = torch.where(binfo > 1, 2., binfo)
+            binfo = self.beat_emb(binfo.long())
+        elif self.binfo_type == 'onset':
+            binfo = self.onset_emb(binfo.long())
+        elif self.binfo_type is None:
+            binfo = None
+        return binfo
 
-    def forward(self, tgz, otz, bact=None):
-        bact = self.bact_conditioner(bact)
-        encoder_kv = self.get_encoder_kv(otz, bact)
-        loss, pred = self.prior(tgz, x_cond=bact, y_cond=None, encoder_kv=encoder_kv, fp16=False, loss_full=False,
+    def forward(self, tgz, otz, binfo=None):
+        binfo = self.binfo_conditioner(binfo)
+        encoder_kv = self.get_encoder_kv(otz, binfo)
+        loss, pred = self.prior(tgz, x_cond=binfo, y_cond=None, encoder_kv=encoder_kv, fp16=False, loss_full=False,
                     encode=False, get_preds=True, get_acts=False, get_sep_loss=False)
         return loss, pred, 
     
-    def sample(self, n_samples, otz, bact, vqvae, temp=1.0, top_k=0, top_p=0.0):
+    def sample(self, n_samples, otz, binfo, vqvae, temp=1.0, top_k=0, top_p=0.0):
         self.eval()
         with torch.no_grad():
-            bact = self.bact_conditioner(bact)
-            encoder_kv = self.get_encoder_kv(otz, bact)
-            pred = self.prior.sample(n_samples, x_cond=bact, y_cond=None,
+            binfo = self.binfo_conditioner(binfo)
+            encoder_kv = self.get_encoder_kv(otz, binfo)
+            pred = self.prior.sample(n_samples, x_cond=binfo, y_cond=None,
                 encoder_kv=encoder_kv, fp16=False, temp=temp, top_k=top_k, top_p=top_p,
                 get_preds=False, sample_tokens=None, device=otz.device
             )
@@ -176,9 +174,9 @@ class JukeTransformer(nn.Module):
                                 checkpoint_mlp=hps.prime_c_mlp if hps.train else 0)
         
         self.hps = hps
-        self.prior = ConditionalAutoregressive2D(x_cond=args.bact_type is not None, y_cond=False, encoder_dims = sequence_length, 
+        self.prior = ConditionalAutoregressive2D(x_cond=args.binfo_type is not None, y_cond=False, encoder_dims = sequence_length, 
                                                     pos_emb=None, **prior_kwargs)
-        self.prime_prior = ConditionalAutoregressive2D(x_cond=args.bact_type is not None, y_cond=False, only_encode=True, 
+        self.prime_prior = ConditionalAutoregressive2D(x_cond=args.binfo_type is not None, y_cond=False, only_encode=True, 
                                                     mask=False, pos_emb=None, **prime_kwargs)
 
 

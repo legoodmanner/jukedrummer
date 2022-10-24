@@ -25,8 +25,8 @@ def get_dataset(hps):
     va_ids = dataset[1]
     print(f'number of training data: {len(tr_ids)}')
     print(f'number of validation data: {len(va_ids)}')
-    tr_dataset = PairFeatureDataset(tr_ids, hps)
-    va_dataset = PairFeatureDataset(va_ids, hps)
+    tr_dataset = BeatInfoPairedDataset(tr_ids, hps)
+    va_dataset = BeatInfoPairedDataset(va_ids, hps)
 
     tr_dataloader = DataLoader(
         dataset=tr_dataset,
@@ -49,12 +49,12 @@ def get_dataset(hps):
     return tr_dataloader, va_dataloader
 
 class Solver():
-    def __init__(self, model, vqvae, bact_type, device):
+    def __init__(self, model, vqvae, binfo_type, device):
         
         self.device = device
         self.model = model
         self.vqvae = vqvae
-        self.bact_type = bact_type
+        self.binfo_type = binfo_type
         self.criterion = nn.CrossEntropyLoss()
         self.opt, self.shd, scalar = get_optimizer(self.model, OPT)
      
@@ -67,11 +67,11 @@ class Solver():
 
         tgz = data[0].long().to(self.device)
         otz = data[1].long().to(self.device)
-        ot_bact = data[2].float().to(self.device)
+        ot_binfo = data[2].float().to(self.device)
 
         bs, l = tgz.size(0), tgz.size(1)
 
-        loss, pred = self.model(tgz, otz, ot_bact)
+        loss, pred = self.model(tgz, otz, ot_binfo)
         summary['train loss' if training else 'valid loss'] = loss.item()
         # summary['train prime loss' if training else 'valid prime loss'] = metric[1].item()
         if training:
@@ -113,7 +113,7 @@ if __name__ == '__main__':
     print(f'LM enc layers: {hps.enc_layers}')
     print(f'LM dec layers: {hps.dec_layers}')
     print(f'd model: {hps.d_model}')
-    print(f'Beat info type: {hps.bact_type}')
+    print(f'Beat info type: {hps.binfo_type}')
 
 
     ### MODEL 
@@ -131,7 +131,7 @@ if __name__ == '__main__':
         decoder = Sampler(input_dim=64, output_dim=80, z_scale_factors=hps.upsample_ratios),
     )
     mean, std = vqvae.restore_from_ckpt(hps, device)
-    solver = Solver(model, vqvae, hps.bact_type, device)
+    solver = Solver(model, vqvae, hps.binfo_type, device)
 
     ### DATA
     tr_dataloader, va_dataloader = get_dataset(hps=hps) 

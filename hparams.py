@@ -134,7 +134,7 @@ vq4 = Hyperparams(
 HPARAMS_REGISTRY['vq4'] = vq4
 
 lm1 = Hyperparams(
-    # Raw beat activation w/o in-attention
+    # Raw beat activation (Low-level) w/o in-attention
     name = 'lm1',
     enc_layers = 20,
     dec_layers= 9,
@@ -143,7 +143,7 @@ lm1 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'raw'
+    binfo_type = 'low'
 )
 HPARAMS_REGISTRY['lm1'] = lm1
 
@@ -157,12 +157,12 @@ lm2 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = None,
+    binfo_type = None,
 )
 HPARAMS_REGISTRY['lm2'] = lm2
 
 lm3 = Hyperparams(
-    # Raw beat activation w/ in-attention
+    # Raw beat activation (Low-level) w/ in-attention
     name = 'lm3',
     enc_layers = 20,
     dec_layers= 9,
@@ -171,12 +171,12 @@ lm3 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'raw',
+    binfo_type = 'low',
 )
 HPARAMS_REGISTRY['lm3'] = lm3
 
 lm4 = Hyperparams(
-    # lm1 but 1024
+    # lm1 but d_model=1024
     name = 'lm4',
     batch_size = 8,
     enc_layers = 20,
@@ -186,12 +186,12 @@ lm4 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'raw',
+    binfo_type = 'low',
 )
 HPARAMS_REGISTRY['lm4'] = lm4
 
 lm5 = Hyperparams(
-    # beat / downbeat / non-beat 3 token beat embed w/o in-attention
+    # beat / downbeat / non-beat 3 token beat embed (High-level) w/o in-attention
     name = 'lm5',
     enc_layers = 20,
     dec_layers= 9,
@@ -200,12 +200,12 @@ lm5 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'token',
+    binfo_type = 'high',
 )
 HPARAMS_REGISTRY['lm5'] = lm5
 
 lm6 = Hyperparams(
-    # beat / downbeat / non-beat 3 token beat embed w/ in-attention
+    # beat / downbeat / non-beat 3 token beat embed (High-level) w/ in-attention
     name = 'lm6',
     enc_layers = 20,
     dec_layers= 9,
@@ -214,12 +214,12 @@ lm6 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'token',
+    binfo_type = 'high',
 )
 HPARAMS_REGISTRY['lm6'] = lm6
 
 lm7 = Hyperparams(
-    # onset/ non-onset 2 tokens beat embed w/o in-attention
+    # onset/ non-onset 2 tokens beat embed (Mid-level) w/o in-attention
     name = 'lm7',
     enc_layers = 20,
     dec_layers= 9,
@@ -228,12 +228,12 @@ lm7 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'onset',
+    binfo_type = 'mid',
 )
 HPARAMS_REGISTRY['lm7'] = lm7
 
 lm8 = Hyperparams(
-    # onset/ non-onset 2 tokens beat embed w/ in-attention
+    # onset/ non-onset 2 tokens beat embed (Mid-level) w/ in-attention
     name = 'lm8',
     enc_layers = 20,
     dec_layers= 9,
@@ -242,12 +242,12 @@ lm8 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'onset',
+    binfo_type = 'mid',
 )
 HPARAMS_REGISTRY['lm8'] = lm8
 
 lm9 = Hyperparams(
-    # No encoder w/ raw beat info
+    # No encoder w/ raw beat info (Low-level)
     name = 'lm9',
     enc_layers = 20,
     dec_layers= 9,
@@ -256,7 +256,7 @@ lm9 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = 'raw',
+    binfo_type = 'low',
 )
 HPARAMS_REGISTRY['lm9'] = lm9
 
@@ -270,7 +270,7 @@ lm10 = Hyperparams(
     heads = 2,
     blocks = 16,
 
-    bact_type = None,
+    binfo_type = None,
 )
 HPARAMS_REGISTRY['lm10'] = lm10
 
