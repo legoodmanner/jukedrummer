@@ -6,7 +6,7 @@ from hparams import Hyperparams
 import librosa
 
 def get_vqvae(vq_idx, data_type, ckpt_dir, device):
-    
+
     ckpt_name = f'vq{vq_idx}_{data_type}.pkl'
     ckpt = torch.load(
         os.path.join(ckpt_dir, ckpt_name), 
