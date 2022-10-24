@@ -1,0 +1,6 @@
+'hifi_gan/'
+'input/'
+'output/'
+'*/__pycache__'
+'data'
+'ckpt
