@@ -76,6 +76,8 @@ class JukeTransformer(nn.Module):
             self.beat_emb = nn.Embedding(3, args.d_model)
         elif self.binfo_type is None:
             pass
+        else:
+            raise RuntimeError('No matchedbeat information type')
 
     def get_prime_loss(self, encoder_kv, prime_t):
         if self.use_tokens:
@@ -98,15 +100,15 @@ class JukeTransformer(nn.Module):
         return encoder_kv
     
     def binfo_conditioner(self, binfo):
-        if self.binfo_type == 'raw':
+        if self.binfo_type == 'low':
             binfo = F.interpolate(binfo.unsqueeze(1), size=(self.prior.encoder_dims, binfo.size(-1))).squeeze(1)
             binfo = self.binfo_state_proj(binfo)
-        elif self.binfo_type == 'token':
+        elif self.binfo_type == 'mid':
+            binfo = self.onset_emb(binfo.long())
+        elif self.binfo_type == 'high':
             binfo = binfo.double()
             binfo = torch.where(binfo > 1, 2., binfo)
             binfo = self.beat_emb(binfo.long())
-        elif self.binfo_type == 'onset':
-            binfo = self.onset_emb(binfo.long())
         elif self.binfo_type is None:
             binfo = None
         return binfo

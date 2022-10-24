@@ -20,15 +20,11 @@ import DrumAware4Beat.da_utils as utils
 
 from madmom.features.downbeats import DBNDownBeatTrackingProcessor as DownBproc
 
-
-
-
 def getRNNembedding(rnn, audio_fea, device, head = 'mix'):
     ## convert nparray feature into tensor
     in_fea = torch.tensor(audio_fea[np.newaxis, :, :]).float().to(device)
     rnn.eval()
     rnn.to(device)
-    
     ## four head types: ['mix' , 'drum', 'nodrum', 'fuser']
     if head == 'mix':
         blstm_out, cellstates = rnn.mixBeat.lstm(in_fea)
@@ -60,6 +56,7 @@ def time2frame4onset(beat_est, ratio, hop_length=256, sr=44100):
     return result
 
 class BeatInfoExtractor():
+
     def __init__(self, info_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
         self.hmm_proc, self.rnn = get_proc(input_csv_path, device)
         self.info_type = info_type
@@ -83,11 +80,7 @@ class BeatInfoExtractor():
         else:
             beat_info = None
         return beat_info
-        # return beat_est
-        # except:
-            
-        #     print(audio_file_path, 'error occur')
-        #     return None
+
 
 def get_proc(input_csv_path, device):
     df = pd.read_csv(input_csv_path)
@@ -106,20 +99,21 @@ def get_proc(input_csv_path, device):
     rnn.load_state_dict(state)
     return hmm_proc, rnn
 
+
 def main(args):
-    data_dir = args.file_path
+    data_dir = args.audio_dir
     info_type = args.info_type
-    output_folder = args.output_path
-    input_csv_path = args.haparam_csv
-    audio_file_paths = os.listdir(data_dir)
+    output_path = args.output_path
+    input_csv_path = args.hparam_csv
+
+    audio_file_paths = os.listdir(os.path.join(data_dir, 'others'))
     device = torch.device(f'cuda:{args.cuda}' if torch.cuda.is_available() else 'cpu')
     hmm_proc, rnn = get_proc(input_csv_path, device)
     extractor = BeatInfoExtractor(info_type, device, input_csv_path=input_csv_path)
     for audio_file_path in tqdm(audio_file_paths):
         ### get feature of input audio file 
-        audio_file_path = os.path.join(data_dir, audio_file_path)
-        save_path = os.path.join(output_folder, 
-                                os.path.basename(audio_file_path).replace('.wav', '.npy'))
+        save_path = os.path.join(output_path, info_type, audio_file_path.replace('.wav', '.npy'))
+        audio_file_path = os.path.join(data_dir, 'others', audio_file_path)
         if os.path.isfile(save_path):
             continue
         try:
@@ -127,18 +121,15 @@ def main(args):
             ### save
             np.save(save_path, beat_info)
         except:
-            print(audio_file_path)
+            print(f'{audio_file_path} error occur')
         
-
-
-
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('info_type', type=str, choices=['onset', 'raw', 'beat'])
-    parser.add_argument('file_path', type=str)
-    parser.add_argument('output_path', type=str)
-    parser.add_argument('--haparam_csv', type=str, default='src/drumaware_hmmparams.csv')
+    parser.add_argument('info_type', type=str, choices=['low', 'mid', 'high'])
+    parser.add_argument('audio_dir', type=str)
+    parser.add_argument('output_path', type=str, default='data/beats')
+    parser.add_argument('--hparam_csv', type=str, default='src/drumaware_hmmparams.csv')
     parser.add_argument('--cuda', type=int, default=0)
     arg = parser.parse_args()
     main(arg)

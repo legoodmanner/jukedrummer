@@ -14,9 +14,9 @@ if __name__ == '__main__':
     parser.add_argument('--cuda', type=int)
     parser.add_argument('--vq_idx', type=int, required=True)
     parser.add_argument('--data_type', type=str, choices=['target', 'others'], required=True)
-    parser.add_argument('--ckpt_dir', type=str, required=True)
-    parser.add_argument('--mel_dir', type=str, required=True)
-    parser.add_argument('--output_dir', type=str, required=True)
+    parser.add_argument('--ckpt_dir', type=str, default='ckpt')
+    parser.add_argument('--mel_dir', type=str, default='data/mel')
+    parser.add_argument('--output_dir', type=str, default='data/token')
     args = parser.parse_args()
 
     device = torch.device(f'cuda:{args.cuda}' if args.cuda else 'cpu')
