@@ -11,6 +11,11 @@ from torch.nn import functional as F
 import pickle
 import argparse
 
+import sys
+sys.path.append(os.getcwd())
+from hparams import MEL as MEL_HPARAMS
+from functools import partial
+
 '''
 Modified from
 https://github.com/descriptinc/melgan-neurips/blob/master/mel2wav/modules.py#L26
@@ -51,8 +56,9 @@ class Audio2Mel(nn.Module):
         return log_mel_spec
 
 
-def process_audios(fn, out_dir, wav_dir, sample_rate, extract_func):
-    y, _ = librosa.load(os.path.join(wav_dir, fn), sr=sample_rate)
+def process_audios(fn, mel_dir, audio_dir, data_type, sample_rate, extract_func):
+    ##### both others and target need to extract mel ######
+    y, _ = librosa.load(os.path.join(audio_dir, data_type, fn), sr=sample_rate)
     peak = np.abs(y).max()
     if peak > 1.0:
         y /= peak
@@ -62,36 +68,53 @@ def process_audios(fn, out_dir, wav_dir, sample_rate, extract_func):
         mel = mel.numpy()[0].astype(np.float32)
         if np.any(np.isnan(mel)) or np.sum(np.mean(mel, axis=0, keepdims=False) < -8) > mel.shape[1] // 2:
             return id, 0
-        np.save(os.path.join(out_dir, fn.replace('wav', 'npy')), mel, allow_pickle=False)
+        np.save(os.path.join(mel_dir, fn.replace('wav', 'npy')), mel, allow_pickle=False)
     except:
         print('error occur')
         return id, 0
     return fn, mel.shape[-1]
 
+def inference(fns, audio_dir, mel_dir):
+    print('step 2: extract Mel spectrogram')
+    hps = MEL_HPARAMS
+    extract_func = Audio2Mel(hps)
+    sr = hps.sampling_rate
+
+    for i, (fn, length) in enumerate(tqdm(pool.imap(
+        partial(process_audios, 
+                mel_dir=mel_dir,
+                audio_dir=audio_dir,
+                data_type='target',
+                sample_rate=sr,
+                extract_func=extract_func,
+                ), fns)),1):
+        if length == 0:
+            print(f'Some error occurs, drum track of {fn} is not genereted into Mel spectrogram')
+    
+    for i, (fn, length) in enumerate(tqdm(pool.imap(
+        partial(process_audios, 
+                mel_dir=mel_dir,
+                audio_dir=audio_dir,
+                data_type='others',
+                sample_rate=sr,
+                extract_func=extract_func,
+                ), fns)),1):
+        if length == 0:
+            print(f'Some error occurs, drumless track of {fn} is not genereted into Mel spectrogram')
 
 if __name__ == "__main__":
-    import sys
-    sys.path.append(os.getcwd())
-    from hparams import MEL as MEL_HPARAMS
-    from functools import partial
-
     parser = argparse.ArgumentParser()
-    parser.add_argument('--wav_dir', type=str, help='path of input wave audio', required=True)
-    parser.add_argument('--out_dir', type=str, help='path of output mel', required=True)
+    parser.add_argument('--audio_dir', type=str, help='path of input wave audio', required=True)
+    parser.add_argument('--mel_dir', type=str, help='path of output mel', required=True)
     parser.add_argument('--process_num', type=int, help='number of processor used to run for multitask pool', default=20)
     args = parser.parse_args()
 
-    # gitignore
-    # out_dir = f'/home/lego/NAS189/home/codify/data/drums/feature/mel/hop/others'
-    # wav_dir =  f'/home/lego/NAS189/home/codify/data/drums/hop_audio_24s/others/' 
-    
-    os.makedirs(args.out_dir, exist_ok=True)
     hps = MEL_HPARAMS
     extract_func = Audio2Mel(hps)
     sr = hps.sampling_rate
 
     # Get list of files
-    audio_fns = [fn for fn in os.listdir(args.wav_dir) if fn.endswith(hps.extension)]
+    audio_fns = [fn for fn in os.listdir(args.audio_dir) if fn.endswith(hps.extension)]
     audio_fns = sorted(list(audio_fns))
 
     # Initiate a pool
@@ -101,8 +124,8 @@ if __name__ == "__main__":
     # Process
     for i, (fn, length) in enumerate(tqdm(pool.imap(
         partial(process_audios, 
-                out_dir=args.out_dir,
-                wav_dir=args.wav_dir,
+                mel_dir=args.mel_dir,
+                audio_dir=args.audio_dir,
                 sample_rate=sr,
                 extract_func=extract_func,
                 ), audio_fns)),1):

@@ -6,9 +6,9 @@ import argparse
 import random
 
 def write_subset(segments, pkl_path, valid_precentage=0.2):
+    # divide dataset into training set and validation set by Mels of complete songs from segemented clips
     nfile = len(os.listdir('data/audio/target/'))
     segments = sorted(segments)
-
     fns = {}
     train_set = []
     valid_set = []
@@ -24,6 +24,8 @@ def write_subset(segments, pkl_path, valid_precentage=0.2):
         pickle.dump([sorted(train_set), sorted(valid_set)], f)
 
 def comparing(data_dir):
+    # comparation between 2 dataset
+
     segments = os.listdir(os.path.join(data_dir, 'target'))
     fns = []
     for s in segments:
@@ -32,6 +34,11 @@ def comparing(data_dir):
             np.load(os.path.join(data_dir, 'others', s)).shape[1]==4096:
             fns.append(s)
     return fns
+
+def inference(mel_dir, pkl_path):
+    print('step 3: divide into subsets')
+    fns = comparing(mel_dir)
+    write_subset(fns, pkl_path)
 
 
 if __name__ == '__main__':

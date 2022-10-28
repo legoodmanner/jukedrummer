@@ -94,26 +94,21 @@ def get_proc(input_csv_path, device):
                              threshold = model_info['threshold'], fps = 100)
     model_setting = model_info['model_setting']
     rnn = DA2(**eval(model_setting))
-    model_path = os.path.join('../ckpt/' , 'RNNBeatProc.pth')
+    model_path = os.path.join('ckpt/' , 'RNNBeatProc.pth')
     state = torch.load(model_path, map_location=device)
     rnn.load_state_dict(state)
     return hmm_proc, rnn
 
-
-def main(args):
-    data_dir = args.audio_dir
-    info_type = args.info_type
-    output_path = args.output_path
-    input_csv_path = args.hparam_csv
-
-    audio_file_paths = os.listdir(os.path.join(data_dir, 'others'))
-    device = torch.device(f'cuda:{args.cuda}' if torch.cuda.is_available() else 'cpu')
-    hmm_proc, rnn = get_proc(input_csv_path, device)
+def inference(fns, info_type, audio_dir, beat_dir, n_cuda):
+    print('step 4: extract beat information')
+    input_csv_path='src/drumaware_hmmparams.csv'
+    device = torch.device(f'cuda:{n_cuda}' if torch.cuda.is_available() else 'cpu')
     extractor = BeatInfoExtractor(info_type, device, input_csv_path=input_csv_path)
-    for audio_file_path in tqdm(audio_file_paths):
+
+    for fn in tqdm(fns):
         ### get feature of input audio file 
-        save_path = os.path.join(output_path, info_type, audio_file_path.replace('.wav', '.npy'))
-        audio_file_path = os.path.join(data_dir, 'others', audio_file_path)
+        save_path = os.path.join(beat_dir, info_type, fn.replace('.wav', '.npy'))
+        audio_file_path = os.path.join(audio_dir, 'others', fn)
         if os.path.isfile(save_path):
             continue
         try:
@@ -121,7 +116,29 @@ def main(args):
             ### save
             np.save(save_path, beat_info)
         except:
-            print(f'{audio_file_path} error occur')
+            print(f'{fn} error occur during beat information extraction')
+
+def main(args):     
+    data_dir = args.audio_dir
+    info_type = args.info_type
+    output_path = args.output_path
+    input_csv_path = args.hparam_csv
+
+    fns = os.listdir(os.path.join(data_dir, 'others'))
+    device = torch.device(f'cuda:{args.cuda}' if torch.cuda.is_available() else 'cpu')
+    extractor = BeatInfoExtractor(info_type, device, input_csv_path=input_csv_path)
+    for fn in tqdm(fns):
+        ### get feature of input audio file 
+        save_path = os.path.join(output_path, info_type, fn.replace('.wav', '.npy'))
+        audio_file_path = os.path.join(data_dir, 'others', fn)
+        if os.path.isfile(save_path):
+            continue
+        try:
+            beat_info = extractor(audio_file_path)
+            ### save
+            np.save(save_path, beat_info)
+        except:
+            print(f'{fn} error occur during beat information extraction')
         
 
 if __name__ == "__main__":
