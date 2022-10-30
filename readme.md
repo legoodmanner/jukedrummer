@@ -8,7 +8,7 @@
 ), [MixingSecret](https://musicinformatics.gatech.edu/conferences/mixing-secrets-a-multi-track-dataset-for-instrument-recognition/) after delete several duplicated songs in the joined dataset.
 - We put our results in our [demo page](https://legoodmanner.github.io/jukedrummer-demo/). For further demonstration, please visit the site.
 
-![](src/img/flowchart.jpg=500)
+![](src/img/flowchart.jpg)
 
 
 ---
