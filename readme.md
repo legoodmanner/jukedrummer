@@ -1,8 +1,10 @@
 # JukeDrummer
 
-Demo video:
+
+### Demo video 
 [![Watch the video](https://img.youtube.com/vi/kfsN_46Rwq0/maxresdefault.jpg)](https://www.youtube.com/watch?v=kfsN_46Rwq0)
 
+- Author: [Yueh-Kao Wu](), [Ching-Yu Chiu](https://github.com/SunnyCYC), [Yi-Hsuan Yang](http://mac.citi.sinica.edu.tw/~yang/)
 - This repository contains the official implementation of the following paper: **JukeDrummer: Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA** [[arxiv](https://arxiv.org/abs/2210.06007)] [[demo](https://legoodmanner.github.io/jukedrummer-demo/)]
 - Jukedrummer is a project on drum accopaniment generation given songs in which percussion instruments are completely absent (drumless songs) as input. The generated drum accompaniments should not only sound consistent with input but also sound similar to real drums.
 - We use joined dataset consiting 3 different multi-track dataset: [MUSDB18](https://sigsep.github.io/datasets/musdb.html), [MedleyDB](https://medleydb.weebly.com
@@ -90,3 +92,9 @@ However, there are several problems still remaining to be solved in future works
 - **Generalizability**: Generated accompaniments are worse when using recordings outside our joined dataset
 - **Stability**: The model struggles to change its tempo going through different sections of a song.
 - **Dependency**: Insufficient clues for locating beats and tempo would lead to bad accompaniment generation.
+
+## Reference:
+- [Jukebox](https://github.com/openai/jukebox)
+- [HifiGAN](https://github.com/jik876/hifi-gan)
+- [madmom](https://github.com/CPJKU/madmom)
+- [drum-aware4beat](https://github.com/SunnyCYC/drum-aware4beat)
