@@ -1,6 +1,6 @@
 # JukeDrummer
 
-[![](https://img.youtube.com/vi/kfsN_46Rwq0/maxresdefault.jpg)](https://www.youtube.com/watch?v=kfsN_46Rwq0)
+[![Watch the video](https://img.youtube.com/vi/kfsN_46Rwq0/maxresdefault.jpg)](https://www.youtube.com/watch?v=kfsN_46Rwq0)
 
 - This repository contains the official implementation of the following paper: **JukeDrummer: Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA** [[arxiv](https://arxiv.org/abs/2210.06007)] [[demo](https://legoodmanner.github.io/jukedrummer-demo/)]
 - Jukedrummer is a project on drum accopaniment generation given songs in which percussion instruments are completely absent (drumless songs) as input. The generated drum accompaniments should not only sound consistent with input but also sound similar to real drums.
@@ -8,8 +8,7 @@
 ), [MixingSecret](https://musicinformatics.gatech.edu/conferences/mixing-secrets-a-multi-track-dataset-for-instrument-recognition/) after delete several duplicated songs in the joined dataset.
 - We put our results in our [demo page](https://legoodmanner.github.io/jukedrummer-demo/). For further demonstration, please visit the site.
 
-![](src/img/flowchart.jpg)
-
+<img src="src/img/flowchart.jpg" width="600">
 
 ---
 
