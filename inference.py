@@ -23,8 +23,8 @@ def get_raw_data(input_dir):
     
 if __name__ == '__main__':
     parser = argparse.ArgumentParser()
-    parser.add_argument('exp_idx', type=int, help='Determine which experiment id of models is used to sample')
-    parser.add_argument('cuda', type=int, help='cuda id')
+    parser.add_argument('--exp_idx', type=int, help='Determine which experiment id of models is used to sample')
+    parser.add_argument('--cuda', type=int, help='cuda id')
     parser.add_argument('--input_dir', type=str, default='input/')
     parser.add_argument('--output_dir', type=str, default='output/')
     parser.add_argument('--sample_iters', type=int, default=10)

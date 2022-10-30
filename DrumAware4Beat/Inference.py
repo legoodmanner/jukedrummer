@@ -25,14 +25,11 @@ from madmom.features.downbeats import RNNDownBeatProcessor as RNNproc_api
 
 import librosa
 # from da_utils import *
-import da utils as utils
+import da_utils as utils
 #import mir_eval
 
 f_measure_threshold=0.07 # 70ms tolerance as set in paper
 beats_per_bar = [3, 4]
-
-
-
 
 
 #%%
