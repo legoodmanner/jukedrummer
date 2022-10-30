@@ -1,5 +1,6 @@
 # JukeDrummer
 
+Demo video:
 [![Watch the video](https://img.youtube.com/vi/kfsN_46Rwq0/maxresdefault.jpg)](https://www.youtube.com/watch?v=kfsN_46Rwq0)
 
 - This repository contains the official implementation of the following paper: **JukeDrummer: Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA** [[arxiv](https://arxiv.org/abs/2210.06007)] [[demo](https://legoodmanner.github.io/jukedrummer-demo/)]
@@ -8,7 +9,7 @@
 ), [MixingSecret](https://musicinformatics.gatech.edu/conferences/mixing-secrets-a-multi-track-dataset-for-instrument-recognition/) after delete several duplicated songs in the joined dataset.
 - We put our results in our [demo page](https://legoodmanner.github.io/jukedrummer-demo/). For further demonstration, please visit the site.
 
-<img src="src/img/flowchart.jpg" width="600">
+<img src="src/img/flowchart.jpg" width="500">
 
 ---
 
