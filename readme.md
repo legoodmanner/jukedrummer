@@ -1,14 +1,17 @@
 # JukeDrummer
 
-![](https://www.youtube.com/watch?v=kfsN_46Rwq0)
+[![](https://img.youtube.com/vi/kfsN_46Rwq0/maxresdefault.jpg)](https://www.youtube.com/watch?v=kfsN_46Rwq0)
 
-- This repository contains the official implementation of the following paper: [Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA](https://arxiv.org/abs/2210.06007)
+- This repository contains the official implementation of the following paper: **JukeDrummer: Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA** [[arxiv](https://arxiv.org/abs/2210.06007)] [[demo](https://legoodmanner.github.io/jukedrummer-demo/)]
 - Jukedrummer is a project on drum accopaniment generation given songs in which percussion instruments are completely absent (drumless songs) as input. The generated drum accompaniments should not only sound consistent with input but also sound similar to real drums.
 - We use joined dataset consiting 3 different multi-track dataset: [MUSDB18](https://sigsep.github.io/datasets/musdb.html), [MedleyDB](https://medleydb.weebly.com
 ), [MixingSecret](https://musicinformatics.gatech.edu/conferences/mixing-secrets-a-multi-track-dataset-for-instrument-recognition/) after delete several duplicated songs in the joined dataset.
 - We put our results in our [demo page](https://legoodmanner.github.io/jukedrummer-demo/). For further demonstration, please visit the site.
 
-![](src/img/flowchart.png)
+![](src/img/flowchart.jpg=500)
+
+
+---
 
 ## Prerequisites
 - Python version >= 3.6
@@ -18,9 +21,15 @@
     ```
 - GPU with >10 GB RAM (optional, but recommended)
 
+
+---
+
 ## Inference
 ### Get pre-trained parameters
-
+The script below would download the checkpoints to `ckpt/` folder.
+```bash
+bash script/get_ckpt.sh
+```
 ### Generating
 The model would load pre-trained parameters in `\ckpt` when inference.
 ```bash
@@ -40,6 +49,9 @@ Note that `exp_id` could be choiced from `1, 2, 11, 12`:
 According to our experiment, model with checkpoint `exp_id=1` is the **best** in both subjective and objective metrics. 
 
 (For more configuration setting, please refer `hparams.py`)
+
+
+---
 
 ## Training
 ### Preprocessing
@@ -62,9 +74,6 @@ According to our experiment, model with checkpoint `exp_id=1` is the **best** in
 
 ### Train
 
-
-
-
 - For complete training process, there are 5 stages:
     1. Train drum VQ-VAE
     2. Train drumless VQ-VAE
@@ -74,3 +83,10 @@ According to our experiment, model with checkpoint `exp_id=1` is the **best** in
     ```bash
     bash script/train.sh
     ```
+---
+
+## Limitation
+However, there are several problems still remaining to be solved in future works:  
+- **Generalizability**: Generated accompaniments are worse when using recordings outside our joined dataset
+- **Stability**: The model struggles to change its tempo going through different sections of a song.
+- **Dependency**: Insufficient clues for locating beats and tempo would lead to bad accompaniment generation.
