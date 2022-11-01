@@ -57,9 +57,9 @@ def time2frame4onset(beat_est, ratio, hop_length=256, sr=44100):
 
 class BeatInfoExtractor():
 
-    def __init__(self, bbinfo_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
+    def __init__(self, binfo_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
         self.hmm_proc, self.rnn = get_proc(input_csv_path, device)
-        self.bbinfo_type = bbinfo_type
+        self.binfo_type = binfo_type
         self.device = device
 
     def __call__(self, audio_file_path):
@@ -68,14 +68,14 @@ class BeatInfoExtractor():
         out, out_fea = getRNNembedding(self.rnn, audio_fea=feat, device=self.device,
                             head = 'nodrum')
         out = utils.prediction_conversion(out)
-        if self.bbinfo_type == 'high':
+        if self.binfo_type == 'high':
             beat_est = self.hmm_proc(out)
             beat_info = time2frame4beat(beat_est, ratio=4)
-        elif self.bbinfo_type == 'mid':
+        elif self.binfo_type == 'mid':
             beats_spppk_tmp, _ = find_peaks(np.max(out, -1), height = 0.1, distance = 7, prominence = 0.1)
             onset_est = beats_spppk_tmp/ 100
             beat_info = time2frame4onset(onset_est, ratio=4)
-        elif self.bbinfo_type == 'low':
+        elif self.binfo_type == 'low':
             beat_info = out_fea
         else:
             beat_info = None
