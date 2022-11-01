@@ -98,3 +98,6 @@ However, there are several problems still remaining to be solved in future works
 - [HifiGAN](https://github.com/jik876/hifi-gan)
 - [madmom](https://github.com/CPJKU/madmom)
 - [drum-aware4beat](https://github.com/SunnyCYC/drum-aware4beat)
+
+## Contact:
+Feel free to email me: yk.lego09@gmail.com if you have any problem.

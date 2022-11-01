@@ -57,9 +57,9 @@ def time2frame4onset(beat_est, ratio, hop_length=256, sr=44100):
 
 class BeatInfoExtractor():
 
-    def __init__(self, info_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
+    def __init__(self, bbinfo_type, device, input_csv_path='src/drumaware_hmmparams.csv'):
         self.hmm_proc, self.rnn = get_proc(input_csv_path, device)
-        self.info_type = info_type
+        self.bbinfo_type = bbinfo_type
         self.device = device
 
     def __call__(self, audio_file_path):
@@ -68,14 +68,14 @@ class BeatInfoExtractor():
         out, out_fea = getRNNembedding(self.rnn, audio_fea=feat, device=self.device,
                             head = 'nodrum')
         out = utils.prediction_conversion(out)
-        if self.info_type == 'onset':
+        if self.bbinfo_type == 'high':
+            beat_est = self.hmm_proc(out)
+            beat_info = time2frame4beat(beat_est, ratio=4)
+        elif self.bbinfo_type == 'mid':
             beats_spppk_tmp, _ = find_peaks(np.max(out, -1), height = 0.1, distance = 7, prominence = 0.1)
             onset_est = beats_spppk_tmp/ 100
             beat_info = time2frame4onset(onset_est, ratio=4)
-        elif self.info_type == 'token':
-            beat_est = self.hmm_proc(out)
-            beat_info = time2frame4beat(beat_est, ratio=4)
-        elif self.info_type == 'raw':
+        elif self.bbinfo_type == 'low':
             beat_info = out_fea
         else:
             beat_info = None
@@ -99,15 +99,15 @@ def get_proc(input_csv_path, device):
     rnn.load_state_dict(state)
     return hmm_proc, rnn
 
-def inference(fns, info_type, audio_dir, beat_dir, n_cuda):
+def inference(fns, binfo_type, audio_dir, beat_dir, n_cuda):
     print('step 4: extract beat information')
     input_csv_path='src/drumaware_hmmparams.csv'
     device = torch.device(f'cuda:{n_cuda}' if torch.cuda.is_available() else 'cpu')
-    extractor = BeatInfoExtractor(info_type, device, input_csv_path=input_csv_path)
+    extractor = BeatInfoExtractor(binfo_type, device, input_csv_path=input_csv_path)
 
     for fn in tqdm(fns):
         ### get feature of input audio file 
-        save_path = os.path.join(beat_dir, info_type, fn.replace('.wav', '.npy'))
+        save_path = os.path.join(beat_dir, binfo_type, fn.replace('.wav', '.npy'))
         audio_file_path = os.path.join(audio_dir, 'others', fn)
         if os.path.isfile(save_path):
             continue
@@ -120,16 +120,16 @@ def inference(fns, info_type, audio_dir, beat_dir, n_cuda):
 
 def main(args):     
     data_dir = args.audio_dir
-    info_type = args.info_type
+    binfo_type = args.binfo_type
     output_path = args.output_path
     input_csv_path = args.hparam_csv
 
     fns = os.listdir(os.path.join(data_dir, 'others'))
     device = torch.device(f'cuda:{args.cuda}' if torch.cuda.is_available() else 'cpu')
-    extractor = BeatInfoExtractor(info_type, device, input_csv_path=input_csv_path)
+    extractor = BeatInfoExtractor(binfo_type, device, input_csv_path=input_csv_path)
     for fn in tqdm(fns):
         ### get feature of input audio file 
-        save_path = os.path.join(output_path, info_type, fn.replace('.wav', '.npy'))
+        save_path = os.path.join(output_path, binfo_type, fn.replace('.wav', '.npy'))
         audio_file_path = os.path.join(data_dir, 'others', fn)
         if os.path.isfile(save_path):
             continue
@@ -143,7 +143,7 @@ def main(args):
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser()
-    parser.add_argument('info_type', type=str, choices=['low', 'mid', 'high'])
+    parser.add_argument('binfo_type', type=str, choices=['low', 'mid', 'high'])
     parser.add_argument('audio_dir', type=str)
     parser.add_argument('output_path', type=str, default='data/beats')
     parser.add_argument('--hparam_csv', type=str, default='src/drumaware_hmmparams.csv')
