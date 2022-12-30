@@ -3,4 +3,3 @@ output/
 */__pycache__
 data
 *.pkl
-.gitignore
