@@ -96,8 +96,20 @@ However, there are several problems still remaining to be solved in future works
 ## Reference:
 - [Jukebox](https://github.com/openai/jukebox)
 - [HifiGAN](https://github.com/jik876/hifi-gan)
+    - The contents in the directory, "hifi_gan", are cloned and revised from this repo. 
 - [madmom](https://github.com/CPJKU/madmom)
 - [drum-aware4beat](https://github.com/SunnyCYC/drum-aware4beat)
+    - The contents in the directory, "DrumAware4Beat", are cloned and revised from this repo. 
 
 ## Contact:
 Feel free to email me: yk.lego09@gmail.com if you have any problem.
+
+## Citation:
+```
+@inproceedings{wu2022jukedrummer, 
+	title={JukeDrummer: Conditional Beat-aware Audio-domain Drum Accompaniment Generation via Transformer VQ-VA},
+	author={Yueh-Kao Wu, Ching-Yu Chiu, Yi-Hsuan Yang},
+	booktitle = {Proc. Int. Society for Music Information Retrieval Conf.},
+	year={2022},
+}
+```
