@@ -26,7 +26,7 @@ def main(args):
     # 1. Segmentation by either downbeats or hop window
     data_segmentation(fns, args.segment_by_downbeats, length)
     # 2. Extract Mel spectrograms from segemented audio waves
-    melspec_extraction(audio_dir, mel_dir)
+    melspec_extraction(fns, audio_dir, mel_dir)
     # 3. Divide dataset into train & valid subset
     subset_division(mel_dir, args.dataset_pkl_path)
     # 4. Beat Information Extraction

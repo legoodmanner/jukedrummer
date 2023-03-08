@@ -74,11 +74,12 @@ def process_audios(fn, mel_dir, audio_dir, data_type, sample_rate, extract_func)
         return id, 0
     return fn, mel.shape[-1]
 
-def inference(fns, audio_dir, mel_dir):
+def inference(fns, audio_dir, mel_dir, process_num=4):
     print('step 2: extract Mel spectrogram')
     hps = MEL_HPARAMS
     extract_func = Audio2Mel(hps)
     sr = hps.sampling_rate
+    pool = Pool(processes=process_num)
 
     for i, (fn, length) in enumerate(tqdm(pool.imap(
         partial(process_audios, 
