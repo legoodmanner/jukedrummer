@@ -21,8 +21,8 @@ def main(args):
     
 
     length = 8192 * 8 * 4 * 4 # This variation is recommended to be fixed
-    fns = os.listdir(audio_dir, 'target')
-    fns = [f for f in fns if f.endwiths('.wav')]
+    fns = os.listdir(os.path.join(audio_dir, 'target'))
+    fns = [f for f in fns if f.endswith('.wav')]
     # 1. Segmentation by either downbeats or hop window
     data_segmentation(fns, args.segment_by_downbeats, length)
     # 2. Extract Mel spectrograms from segemented audio waves
