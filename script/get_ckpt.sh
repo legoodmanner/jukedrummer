@@ -14,7 +14,7 @@ wget -O ckpt/vq1_others.pkl 'https://docs.google.com/uc?export=download&id='$vq1
 wget -O ckpt/exp1.pkl 'https://docs.google.com/uc?export=download&id='$exp1
 wget -O ckpt/exp11.pkl 'https://docs.google.com/uc?export=download&id='$exp11
 wget -O ckpt/RNNBeatProc.pth 'https://docs.google.com/uc?export=download&id='$tracker
-wget -O ckpt/hifigan/generator 'https://docs.google.com/uc?export=download&id='$generator
+wget -O ckpt/vocoder/generator 'https://docs.google.com/uc?export=download&id='$generator
 
 
 
